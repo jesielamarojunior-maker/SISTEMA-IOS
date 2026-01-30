@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Simples - IOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .login-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .alert {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2 style="text-align: center;">🏫 IOS - Login</h2>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" value="admin@ios.org.br" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" value="admin123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="userType">Tipo de usuário:</label>
+                <select id="userType" required>
+                    <option value="">Selecione...</option>
+                    <option value="admin" selected>Administrador Master</option>
+                    <option value="instructor">Instrutor</option>
+                    <option value="pedagogue">Pedagogo</option>
+                    <option value="monitor">Monitor</option>
+                </select>
+            </div>
+            
+            <button type="submit">Entrar no Sistema</button>
+        </form>
+        
+        <div id="loginAlert" class="alert alert-error hidden">
+            Credenciais inválidas!
+        </div>
+        
+        <div id="loginSuccess" class="alert alert-success hidden">
+            Login realizado com sucesso!
+        </div>
+    </div>
+
+    <script>
+        // Usuários de teste fixos
+        const testUsers = {
+            "admin@ios.org.br": {
+                password: "admin123",
+                type: "admin",
+                name: "Administrador Master",
+                unitId: null,
+            },
+            "instrutor@ios.org.br": {
+                password: "inst123",
+                type: "instructor",
+                name: "João Instrutor",
+                unitId: 1,
+            },
+            "pedagogo@ios.org.br": {
+                password: "ped123",
+                type: "pedagogue",
+                name: "Maria Pedagoga",
+                unitId: 1,
+            },
+            "monitor@ios.org.br": {
+                password: "mon123",
+                type: "monitor",
+                name: "Carlos Monitor",
+                unitId: 1,
+            },
+        };
+
+        // Função de login simplificada
+        function simpleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const userType = document.getElementById("userType").value;
+            
+            console.log("Tentando login:", { email, userType, password: "***" });
+            
+            // Verificar se as credenciais estão corretas
+            if (testUsers[email] && testUsers[email].password === password && testUsers[email].type === userType) {
+                console.log("Login bem-sucedido!");
+                
+                // Salvar no localStorage para o sistema principal
+                const currentUser = {
+                    email: email,
+                    name: testUsers[email].name,
+                    type: userType,
+                    unitId: testUsers[email].unitId,
+                };
+                
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                // Mostrar sucesso
+                document.getElementById('loginAlert').classList.add('hidden');
+                document.getElementById('loginSuccess').classList.remove('hidden');
+                
+                // Redirecionar para o sistema principal
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                
+            } else {
+                console.log("Login falhou!");
+                document.getElementById('loginSuccess').classList.add('hidden');
+                document.getElementById('loginAlert').classList.remove('hidden');
+            }
+        }
+
+        // Registrar evento
+        document.getElementById('loginForm').addEventListener('submit', simpleLogin);
+        
+        // Verificar se já está logado
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            try {
+                const user = JSON.parse(savedUser);
+                console.log("Usuário já logado:", user.name);
+                
+                // Mostrar sucesso e redirecionar
+                document.getElementById('loginSuccess').classList.remove('hidden');
+                document.getElementById('loginSuccess').textContent = 'Redirecionando...';
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+                
+            } catch (e) {
+                console.log("Erro ao carregar usuário salvo:", e);
+                localStorage.removeItem('currentUser');
+            }
+        }
+    </script>
+</body>
+</html>

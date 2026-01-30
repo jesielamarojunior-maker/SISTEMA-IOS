@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Login - IOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .alert {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        .hidden {
+            display: none;
+        }
+        .test-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .log {
+            background: #333;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>🔐 Teste de Login - IOS</h2>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" value="admin@ios.org.br" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" value="admin123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="userType">Tipo de usuário:</label>
+                <select id="userType" required>
+                    <option value="">Selecione...</option>
+                    <option value="admin" selected>Administrador Master</option>
+                    <option value="instructor">Instrutor</option>
+                    <option value="pedagogue">Pedagogo</option>
+                    <option value="monitor">Monitor</option>
+                </select>
+            </div>
+            
+            <button type="submit">Entrar no Sistema</button>
+        </form>
+        
+        <div id="loginAlert" class="alert alert-error hidden">
+            Credenciais inválidas! Tente novamente.
+        </div>
+        
+        <div id="loginSuccess" class="alert alert-success hidden">
+            Login realizado com sucesso!
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 Teste de Diagnóstico</h3>
+            <button type="button" onclick="testSystem()">Testar Sistema</button>
+            <button type="button" onclick="clearData()">Limpar Dados</button>
+            <button type="button" onclick="showUserData()">Mostrar Usuários</button>
+            <div id="testResult"></div>
+            <div id="consoleLog" class="log"></div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        // Interceptar console.log
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const logDiv = document.getElementById('consoleLog');
+            if (logDiv) {
+                logDiv.innerHTML += args.join(' ') + '\n';
+                logDiv.scrollTop = logDiv.scrollHeight;
+            }
+        };
+
+        // Aguardar carregamento completo
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                console.log('🔍 Sistema carregado, testando...');
+                testSystem();
+            }, 1000);
+        });
+
+        function testSystem() {
+            console.log('🧪 Iniciando teste do sistema...');
+            
+            try {
+                // Verificar se DataManager existe
+                if (!window.dataManager) {
+                    throw new Error('DataManager não encontrado');
+                }
+                
+                // Verificar se users existe
+                if (!window.users) {
+                    throw new Error('Array users não encontrado');
+                }
+                
+                // Forçar sincronização
+                if (typeof window.syncGlobalVariables === 'function') {
+                    window.syncGlobalVariables();
+                }
+                
+                console.log('✅ DataManager OK');
+                console.log('✅ Users carregados:', window.users.length);
+                console.log('✅ Sincronização OK');
+                
+                // Listar usuários disponíveis
+                console.log('👥 Usuários disponíveis:');
+                window.users.forEach(user => {
+                    console.log(`- ${user.name} (${user.email}) - ${user.type} - ${user.status}`);
+                });
+                
+                document.getElementById('testResult').innerHTML = '<div class="alert alert-success">✅ Sistema OK!</div>';
+                
+            } catch (error) {
+                console.error('❌ Erro no teste:', error);
+                document.getElementById('testResult').innerHTML = '<div class="alert alert-error">❌ Erro: ' + error.message + '</div>';
+            }
+        }
+
+        function clearData() {
+            if (confirm('Tem certeza que deseja limpar todos os dados?')) {
+                localStorage.removeItem('ios_attendance_system');
+                location.reload();
+            }
+        }
+
+        function showUserData() {
+            const users = window.users || [];
+            let html = '<div style="margin-top: 10px;"><strong>Usuários cadastrados:</strong><br>';
+            
+            users.forEach(user => {
+                html += `<div style="margin: 5px 0; padding: 5px; background: #f0f0f0; border-radius: 3px;">
+                    <strong>${user.name}</strong><br>
+                    Email: ${user.email}<br>
+                    Senha: ${user.password}<br>
+                    Tipo: ${user.type}<br>
+                    Status: ${user.status}
+                </div>`;
+            });
+            
+            html += '</div>';
+            document.getElementById('testResult').innerHTML = html;
+        }
+
+        // Interceptar o submit do formulário
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            console.log('🔍 Formulário enviado');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+            
+            console.log('🔍 Dados do formulário:', { email, password: '***', userType });
+            
+            // Tentar login
+            try {
+                if (typeof window.login === 'function') {
+                    window.login(e);
+                } else {
+                    // Login simplificado para teste
+                    const users = window.users || [];
+                    const user = users.find(u => 
+                        u.email === email && 
+                        u.password === password && 
+                        u.type === userType && 
+                        u.status === 'active'
+                    );
+                    
+                    if (user) {
+                        console.log('✅ Login bem-sucedido!');
+                        document.getElementById('loginAlert').classList.add('hidden');
+                        document.getElementById('loginSuccess').classList.remove('hidden');
+                        
+                        // Redirecionar para index.html após 2 segundos
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    } else {
+                        console.log('❌ Login falhou');
+                        document.getElementById('loginSuccess').classList.add('hidden');
+                        document.getElementById('loginAlert').classList.remove('hidden');
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Erro no login:', error);
+                document.getElementById('loginAlert').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

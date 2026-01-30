@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test IOS System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
+        button { margin: 5px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>IOS System Test</h1>
+    <div id="results"></div>
+    
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="testLocalStorage()">Test LocalStorage</button>
+    <button onclick="testDataSync()">Test Data Sync</button>
+    <button onclick="clearStorage()">Clear Storage</button>
+    
+    <script>
+        function addResult(message, type = 'success') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            document.getElementById('results').appendChild(div);
+        }
+        
+        function testLogin() {
+            addResult('Testing login functionality...', 'warning');
+            
+            // Test credentials
+            const testCredentials = [
+                { email: 'admin@ios.org.br', password: 'admin123', type: 'admin' },
+                { email: 'instrutor@ios.org.br', password: 'inst123', type: 'instructor' },
+                { email: 'pedagogo@ios.org.br', password: 'ped123', type: 'pedagogue' },
+                { email: 'monitor@ios.org.br', password: 'mon123', type: 'monitor' }
+            ];
+            
+            // Check if users exist in localStorage
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            addResult(`Found ${users.length} users in localStorage`);
+            
+            testCredentials.forEach(cred => {
+                const user = users.find(u => u.email === cred.email && u.password === cred.password);
+                if (user) {
+                    addResult(`✓ User ${cred.email} found and credentials match`, 'success');
+                } else {
+                    addResult(`✗ User ${cred.email} not found or credentials don't match`, 'error');
+                }
+            });
+        }
+        
+        function testLocalStorage() {
+            addResult('Testing localStorage functionality...', 'warning');
+            
+            const keys = ['users', 'units', 'courses', 'classes', 'students', 'attendance'];
+            keys.forEach(key => {
+                const data = localStorage.getItem(key);
+                if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        addResult(`✓ ${key}: ${Array.isArray(parsed) ? parsed.length : 'object'} items`, 'success');
+                    } catch (e) {
+                        addResult(`✗ ${key}: Invalid JSON data`, 'error');
+                    }
+                } else {
+                    addResult(`⚠ ${key}: No data found`, 'warning');
+                }
+            });
+        }
+        
+        function testDataSync() {
+            addResult('Testing data synchronization...', 'warning');
+            
+            // Initialize default data if not exists
+            if (!localStorage.getItem('users')) {
+                const defaultUsers = [
+                    {
+                        id: 1,
+                        name: 'Administrador Master',
+                        email: 'admin@ios.org.br',
+                        password: 'admin123',
+                        type: 'admin',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        name: 'Instrutor Teste',
+                        email: 'instrutor@ios.org.br',
+                        password: 'inst123',
+                        type: 'instructor',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 3,
+                        name: 'Pedagogo Teste',
+                        email: 'pedagogo@ios.org.br',
+                        password: 'ped123',
+                        type: 'pedagogue',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 4,
+                        name: 'Monitor Teste',
+                        email: 'monitor@ios.org.br',
+                        password: 'mon123',
+                        type: 'monitor',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                
+                localStorage.setItem('users', JSON.stringify(defaultUsers));
+                addResult('✓ Default users created', 'success');
+            }
+            
+            if (!localStorage.getItem('units')) {
+                const defaultUnits = [
+                    {
+                        id: 1,
+                        name: 'Unidade Central',
+                        address: 'Rua Principal, 123',
+                        phone: '(11) 1234-5678',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        name: 'Unidade Norte',
+                        address: 'Av. Norte, 456',
+                        phone: '(11) 2345-6789',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                
+                localStorage.setItem('units', JSON.stringify(defaultUnits));
+                addResult('✓ Default units created', 'success');
+            }
+            
+            // Initialize other arrays
+            ['courses', 'classes', 'students', 'attendance'].forEach(key => {
+                if (!localStorage.getItem(key)) {
+                    localStorage.setItem(key, JSON.stringify(key === 'attendance' ? {} : []));
+                    addResult(`✓ ${key} initialized`, 'success');
+                }
+            });
+        }
+        
+        function clearStorage() {
+            localStorage.clear();
+            addResult('✓ LocalStorage cleared', 'warning');
+        }
+        
+        // Auto-run tests on load
+        window.onload = function() {
+            testLocalStorage();
+            testDataSync();
+            testLogin();
+        };
+    </script>
+</body>
+</html>

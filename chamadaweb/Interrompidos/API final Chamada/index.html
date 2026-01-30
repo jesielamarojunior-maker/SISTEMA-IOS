@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema IOS{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ios-purple': '#6B46C1',
+                        'ios-purple-dark': '#553C9A',
+                        'ios-orange': '#F97316',
+                        'ios-orange-dark': '#EA580C'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Base Template -->
+    {% if session.user_id %}
+    <!-- Navigation Bar -->
+    <nav class="bg-ios-purple shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-white text-xl font-bold">Sistema IOS</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-white">{{ session.user_name }}</span>
+                    <a href="/logout" class="bg-ios-orange hover:bg-ios-orange-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 mt-4">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} {% if category == 'error' %}bg-red-100 border-red-400 text-red-700{% elif category == 'success' %}bg-green-100 border-green-400 text-green-700{% else %}bg-blue-100 border-blue-400 text-blue-700{% endif %} px-4 py-3 rounded border mb-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 px-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Login Page Template -->
+    {% if request.endpoint == 'login' %}
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-ios-purple to-ios-purple-dark">
+        <div class="max-w-md w-full space-y-8">
+            <div>
+                <div class="mx-auto h-20 w-20 bg-white rounded-full flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-ios-purple text-3xl"></i>
+                </div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
+                    Sistema de Chamada IOS
+                </h2>
+                <p class="mt-2 text-center text-sm text-purple-200">
+                    Instituto da Oportunidade Social
+                </p>
+            </div>
+            <form class="mt-8 space-y-6" method="POST">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="email" class="sr-only">Email</label>
+                        <input id="email" name="email" type="email" required 
+                               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-ios-orange focus:border-ios-orange focus:z-10 sm:text-sm" 
+                               placeholder="Email institucional">
+                    </div>
+                    <div>
+                        <label for="senha" class="sr-only">Senha</label>
+                        <input id="senha" name="senha" type="password" required 
+                               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-ios-orange focus:border-ios-orange focus:z-10 sm:text-sm" 
+                               placeholder="Senha">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" 
+                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-ios-orange hover:bg-ios-orange-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ios-orange transition-colors">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-lock text-ios-orange-dark group-hover:text-ios-orange"></i>
+                        </span>
+                        Entrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Master Dashboard Template -->
+    {% if request.endpoint == 'dashboard_master' %}
+    <div class="space-y-6">
+        <div class="bg-white shadow rounded-lg p-6">
+            <h1 class="text-3xl font-bold text-ios-purple mb-2">Dashboard Administrativo</h1>
+            <p class="text-gray-600">Bem-vindo ao sistema de gestão do IOS</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-building text-ios-purple text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Unidades</dt>
+                                <dd class="text-lg font-medium text-gray-900">{{ stats.unidades or 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-book text-ios-orange text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Cursos</dt>
+                                <dd class="text-lg font-medium text-gray-900">{{ stats.cursos or 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chalkboard-teacher text-ios-purple text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Professores</dt>
+                                <dd class="text-lg font-medium text-gray-900">{{ stats.professores or 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-users text-ios-orange text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Alunos</dt>
+                                <dd class="text-lg font-medium text-gray-900">{{ stats.alunos or 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Ações Rápidas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <a href="/master/unidades" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-ios-purple hover:bg-ios-purple-dark transition-colors">
+                    <i class="fas fa-building mr-2"></i>
+                    Gerenciar Unidades
+                </a>
+                <a href="/master/cursos" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-ios-orange hover:bg-ios-orange-dark transition-colors">
+                    <i class="fas fa-book mr-2"></i>
+                    Gerenciar Cursos
+                </a>
+                <a href="/master/professores" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-ios-purple hover:bg-ios-purple-dark transition-colors">
+                    <i class="fas fa-chalkboard-teacher mr-2"></i>
+                    Gerenciar Professores
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Professor Dashboard Template -->
+    {% if request.endpoint == 'dashboard_professor' %}
+    <div class="space-y-6">
+        <div class="bg-white shadow rounded-lg p-6">
+            <h1 class="text-3xl font-bold text-ios-purple mb-2">Painel do Professor</h1>
+            {% if professor_info %}
+            <div class="text-gray-600">
+                <p><strong>Unidade:</strong> {{ professor_info[1] }}</p>
+                <p><strong>Curso:</strong> {{ professor_info[2] }}</p>
+                <p><strong>Função:</strong> {{ professor_info[3].title() }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Turmas -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-medium text-gray-900">Suas Turmas</h2>
+                {% if turmas|length < 4 %}
+                <a href="/professor/turmas/nova" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-ios-orange hover:bg-ios-orange-dark transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    Nova Turma
+                </a>
+                {% endif %}
+            </div>
+
+            {% if turmas %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for turma in turmas %}
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <h3 class="font-medium text-gray-900">{{ turma[1] }}</h3>
+                    <p class="text-sm text-gray-500 mt-1">Criada em: {{ turma[2].strftime('%d/%m/%Y') }}</p>
+                    <div class="mt-3 flex space-x-2">
+                        <a href="/professor/turmas/{{ turma[0] }}/alunos" class="text-sm bg-ios-purple text-white px-3 py-1 rounded hover:bg-ios-purple-dark transition-colors">
+                            <i class="fas fa-users mr-1"></i>
+                            Alunos
+                        </a>
+                        <a href="/professor/turmas/{{ turma[0] }}/chamada" class="text-sm bg-ios-orange text-white px-3 py-1 rounded hover:bg-ios-orange-dark transition-colors">
+                            <i class="fas fa-clipboard-check mr-1"></i>
+                            Chamada
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-chalkboard text-gray-400 text-4xl mb-4"></i>
+                <p class="text-gray-500">Nenhuma turma cadastrada ainda.</p>
+                <a href="/professor/turmas/nova" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-ios-orange hover:bg-ios-orange-dark transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    Criar Primeira Turma
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Attendance List Template -->
+    {% if request.endpoint == 'fazer_chamada' %}
+    <div class="bg-white shadow rounded-lg p-6">
+        <div class="border-b border-gray-200 pb-4 mb-6">
+            <h1 class="text-2xl font-bold text-ios-purple">Lista de Chamada</h1>
+            <div class="mt-2 text-gray-600">
+                <p><strong>Turma:</strong> {{ turma_info[1] }}</p>
+                <p><strong>Data/Hora:</strong> <span id="current-datetime"></span></p>
+            </div>
+        </div>
+
+        <form method="POST" id="attendance-form">
+            <div class="space-y-3">
+                {% for aluno in alunos %}
+                <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-user-check text-green-500 text-lg"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-900">{{ aluno[1] }}</p>
+                            <p class="text-sm text-gray-500">CPF: {{ aluno[2] }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="mr-3 text-sm text-green-600 font-medium">Presente</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="faltas" value="{{ aluno[0] }}" class="sr-only peer">
+                            <div class="w-11 h-6 bg-green-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            <span class="ml-3 text-sm font-medium text-red-600 peer-checked:block hidden">Faltou</span>
+                        </label>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-6 flex justify-end space-x-3">
+                <a href="/professor/dashboard" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Voltar
+                </a>
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-ios-orange hover:bg-ios-orange-dark transition-colors">
+                    <i class="fas fa-save mr-2"></i>
+                    Salvar Chamada
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Atualizar data/hora em tempo real
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('current-datetime').textContent = now.toLocaleDateString('pt-BR', options);
+        }
+        
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // Toggle switches para faltas
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const container = this.closest('.flex.items-center.justify-between');
+                const presentSpan = container.querySelector('.text-green-600');
+                const absentSpan = container.querySelector('.text-red-600');
+                const icon = container.querySelector('.fas');
+                
+                if (this.checked) {
+                    presentSpan.style.display = 'none';
+                    absentSpan.style.display = 'block';
+                    icon.className = 'fas fa-user-times text-red-500 text-lg';
+                } else {
+                    presentSpan.style.display = 'block';
+                    absentSpan.style.display = 'none';
+                    icon.className = 'fas fa-user-check text-green-500 text-lg';
+                }
+            });
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

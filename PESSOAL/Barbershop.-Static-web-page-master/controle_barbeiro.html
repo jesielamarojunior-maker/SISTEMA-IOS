@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Controle de Agendamentos - Barber Shop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Controle de Agendamentos</h1>
+    </header>
+
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Data</th>
+                    <th>Hora</th>
+                    <th>Procedimentos</th>
+                    <th>Valor Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agendamento in agendamentos %}
+                <tr>
+                    <td>{{ agendamento[1] }}</td>
+                    <td>{{ agendamento[3] }}</td>
+                    <td>{{ agendamento[4] }}</td>
+                    <td>{{ agendamento[5] }}</td>
+                    <td>{{ agendamento[6] }}</td>
+                    <td>R$ {{ agendamento[7] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+        <p>&copy; Barber Shop 2024</p>
+    </footer>
+</body>
+</html>
+   

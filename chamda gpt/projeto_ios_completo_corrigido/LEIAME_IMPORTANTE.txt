@@ -1,0 +1,9 @@
+/* 
+   IMPORTANTE: As funções relacionadas ao sistema de chamada foram movidas para 
+   arquivos separados: attendance-core.js e attendance-functions.js.
+   
+   Isto foi feito para resolver problemas de compatibilidade com os template literals
+   usados no código original (strings com `${expressão}`). 
+   
+   Qualquer modificação relacionada à funcionalidade de chamada deve ser feita nesses arquivos.
+*/

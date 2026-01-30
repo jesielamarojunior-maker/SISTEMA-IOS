@@ -1,0 +1,15 @@
+{
+  "files.associations": {
+    "*.js": "javascript",
+    "advanced-functions.js": "javascript"
+  },
+  "emmet.excludeLanguages": ["javascript"],
+  "javascript.validate.enable": true,
+  "typescript.validate.enable": false,
+  "typescript.suggest.enabled": false,
+  "javascript.preferences.includePackageJsonAutoImports": "off",
+  "javascript.format.enable": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
+}

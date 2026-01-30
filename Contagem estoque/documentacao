@@ -1,0 +1,162 @@
+# Documentação do Sistema de Controle de Estoque - IOS
+
+## 1. Visão Geral
+
+O Sistema de Controle de Estoque foi desenvolvido para o Instituto da Oportunidade Social (IOS) com o objetivo de gerenciar o estoque de camisetas das diferentes unidades, permitindo o planejamento de compras, controle de estoque e exportação de dados.
+
+## 2. Funcionalidades Principais
+
+### 2.1. Gestão de Unidades
+
+- Cadastro de múltiplas unidades com informações específicas
+- Definição da quantidade de vagas por unidade
+- Visualização resumida das unidades cadastradas
+- Alteração das informações das unidades
+
+### 2.2. Controle de Estoque
+
+- Entrada de estoque completo por unidade
+- Ajustes de itens específicos do estoque
+- Consulta de estoque atual (resumido e detalhado)
+- Estoque separado por estampa (parceiros costas + manga) e tamanho
+
+### 2.3. Planejamento de Compras
+
+- Cadastro de parceiros (costas e manga)
+- Distribuição percentual por tamanho
+- Cálculo de necessidades com base no número de alunos
+- Consideração do estoque atual nas recomendações de compra
+- Sugestão automática de distribuição com base em históricos anteriores
+
+### 2.4. Histórico de Semestres
+
+- Registro de planejamentos anteriores
+- Visualização detalhada por semestre
+- Acesso rápido às informações de compras passadas
+
+### 2.5. Exportação de Dados
+
+- Exportação do estoque atual para CSV
+- Exportação do estoque atual para Excel
+- Exportação do histórico de semestres para Excel com múltiplas abas
+
+## 3. Estrutura de Dados
+
+O sistema utiliza um arquivo JSON (estoque_ios.json) para armazenar os dados, organizados da seguinte forma:
+
+```
+{
+  "unidades": {
+    "Nome da Unidade 1": {
+      "estoque_atual": {
+        "parceiro_costas_parceiro_manga": {
+          "PP": quantidade,
+          "P": quantidade,
+          ...
+        }
+      },
+      "historico_semestres": [
+        {
+          "semestre": "nome_semestre",
+          "curso": "nome_curso",
+          "data": "data_iso",
+          "vagas_por_unidade": numero,
+          "num_unidades": numero,
+          "total_alunos": numero,
+          "parceiros": {
+            "costas": ["parceiro1", "parceiro2"],
+            "manga": ["parceiro1", "parceiro2"]
+          },
+          "distribuicao_tamanhos": {
+            "PP": porcentagem,
+            ...
+          },
+          "necessidades": {
+            ...
+          }
+        }
+      ],
+      "ultima_atualizacao": "data_iso",
+      "vagas": numero
+    }
+  }
+}
+```
+
+## 4. Requisitos do Sistema
+
+- Python 3.6 ou superior
+- Bibliotecas:
+  - pandas (para exportação Excel)
+  - json (manipulação de dados)
+  - csv (exportação CSV)
+  - datetime (manipulação de datas)
+  - collections (para defaultdict)
+  - os (operações do sistema)
+
+## 5. Guia de Uso
+
+### 5.1. Executando o Sistema
+
+Para iniciar o sistema, execute o arquivo executar_estoque.bat ou use o seguinte comando no terminal:
+
+```
+python estoque_ios.py
+```
+
+### 5.2. Primeira Utilização
+
+1. Na primeira execução, você será solicitado a criar uma unidade
+2. Informe o nome da unidade e o número de vagas disponíveis
+3. Após criar a unidade, você terá acesso ao menu principal
+
+### 5.3. Gerenciando Unidades
+
+- Use a opção "Unidades" no menu principal para visualizar, criar, editar ou remover unidades
+- Para trocar a unidade ativa, use a opção "Trocar Unidade"
+- Cada unidade tem seu próprio controle de estoque e histórico de semestres
+
+### 5.4. Entrada de Estoque
+
+1. Selecione "Entrada Manual do Estoque" no menu principal
+2. Escolha entre entrada completa ou ajustes específicos
+3. Na entrada completa, cadastre os parceiros e informe as quantidades por tamanho
+4. Revise o resumo antes de confirmar a entrada
+
+### 5.5. Planejamento de Compras
+
+1. Selecione "Planejamento de Compras" no menu principal
+2. Informe os dados do semestre (nome, curso, número de unidades)
+3. Cadastre os parceiros para o semestre
+4. Digite a distribuição percentual por tamanho (sugestão baseada em histórico disponível)
+5. Revise o relatório de compras gerado
+6. Salve no histórico se desejar
+
+### 5.6. Exportação de Dados
+
+1. Selecione "Exportar Dados" no menu principal
+2. Escolha o formato de exportação (CSV ou Excel)
+3. Para histórico, será gerado um arquivo Excel com múltiplas abas
+4. Os arquivos serão salvos na mesma pasta do programa
+
+## 6. Dicas e Recomendações
+
+- **Backup de Dados**: Faça cópias periódicas do arquivo estoque_ios.json
+- **Distribuição de Tamanhos**: O total deve somar 100% para resultados precisos
+- **Unidades**: Cada unidade possui seu próprio estoque e histórico
+- **Múltiplos Cursos**: É possível especificar um número diferente de vagas para cada curso
+- **Exportação**: Utilize os recursos de exportação para gerar relatórios para impressão ou análise
+
+## 7. Solução de Problemas
+
+| Problema                      | Solução                                                            |
+| ----------------------------- | ------------------------------------------------------------------ |
+| Sistema não inicia            | Verifique se o Python está instalado corretamente                  |
+| Erro ao exportar              | Verifique se as bibliotecas pandas e openpyxl estão instaladas     |
+| Dados não aparecem            | Verifique permissões de acesso ao arquivo estoque_ios.json         |
+| Erro ao calcular necessidades | Verificar se a distribuição de tamanhos soma 100%                  |
+| Sistema fecha inesperadamente | Execute através do batch ou terminal para ver as mensagens de erro |
+
+---
+
+© 2025 Instituto da Oportunidade Social - Todos os direitos reservados.

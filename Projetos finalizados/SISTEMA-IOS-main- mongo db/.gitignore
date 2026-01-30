@@ -1,0 +1,41 @@
+# Dependências
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+
+# Arquivos de build
+build/
+dist/
+*.egg-info/
+
+# Variáveis de ambiente
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Tudo da pasta pai
+../*
+../../*
+
+# Arquivos específicos do projeto
+*.backup
+*.corrupted.backup

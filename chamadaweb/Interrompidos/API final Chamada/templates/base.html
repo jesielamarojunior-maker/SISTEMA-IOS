@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Sistema IOS{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "ios-purple": "#6B46C1",
+              "ios-purple-dark": "#553C9A",
+              "ios-orange": "#F97316",
+              "ios-orange-dark": "#EA580C",
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Base Template -->
+    {% if session.user_id %}
+    <!-- Navigation Bar -->
+    <nav class="bg-ios-purple shadow-lg">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <h1 class="text-white text-xl font-bold">Sistema IOS</h1>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <span class="text-white">{{ session.user_name }}</span>
+            <a
+              href="/logout"
+              class="bg-ios-orange hover:bg-ios-orange-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    {% endif %}
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="max-w-7xl mx-auto px-4 mt-4">
+      {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} {% if category == 'error' %}bg-red-100 border-red-400 text-red-700{% elif category == 'success' %}bg-green-100 border-green-400 text-green-700{% else %}bg-blue-100 border-blue-400 text-blue-700{% endif %} px-4 py-3 rounded border mb-4"
+      >
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 px-4">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Scripts -->
+    <script src="/static/js/masks.js"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

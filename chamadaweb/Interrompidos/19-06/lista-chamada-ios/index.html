@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instituto da Oportunidade Social - Sistema de Chamada</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="login-container">
+        <div class="logo">
+            <div>
+                <h1><i class="fas fa-graduation-cap"></i> IOS</h1>
+                <div class="subtitle">Instituto da Oportunidade Social</div>
+            </div>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> E-mail</label>
+                <input type="email" id="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Senha</label>
+                <input type="password" id="password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="userType"><i class="fas fa-user-tag"></i> Tipo de Usuário</label>
+                <select id="userType" required>
+                    <option value="">Selecione...</option>
+                    <option value="admin">Administrador Master</option>
+                    <option value="instructor">Instrutor</option>
+                    <option value="pedagogue">Pedagogo</option>
+                    <option value="monitor">Monitor</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn" style="width: 100%;">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+        </form>
+        
+        <div id="loginAlert" class="alert alert-error hidden">
+            Credenciais inválidas! Tente novamente.
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: #f7fafc; border-radius: 8px; font-size: 0.9rem;">
+            <strong>Usuários de Teste:</strong><br>
+            Admin: admin@ios.org.br / admin123<br>
+            Instrutor: instrutor@ios.org.br / inst123<br>
+            Pedagogo: pedagogo@ios.org.br / ped123<br>
+            Monitor: monitor@ios.org.br / mon123
+        </div>
+    </div>
+
+    <!-- Sistema Principal -->
+    <div id="mainSystem" class="container hidden">
+        <div class="header">
+            <div class="logo">
+                <div>
+                    <h1><i class="fas fa-graduation-cap"></i> Instituto da Oportunidade Social</h1>
+                    <div class="subtitle">Sistema de Controle de Presença</div>
+                </div>
+            </div>
+            
+            <div id="userInfo" class="user-info">
+                <div class="user-avatar" id="userAvatar">A</div>
+                <div>
+                    <div id="userName" style="font-weight: 600;"></div>
+                    <div id="userRole" style="color: #718096; font-size: 0.9rem;"></div>
+                </div>
+                <button class="btn btn-danger" onclick="logout()" style="margin-left: auto;">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+            
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showPage('dashboard')">
+                    <i class="fas fa-chart-pi"></i> Dashboard
+                </button>
+                <button class="nav-tab" onclick="showPage('units')" id="unitsTab">
+                    <i class="fas fa-building"></i> Unidades
+                </button>
+                <button class="nav-tab" onclick="showPage('classes')">
+                    <i class="fas fa-users"></i> Turmas
+                </button>
+                <button class="nav-tab" onclick="showPage('attendance')">
+                    <i class="fas fa-check-circle"></i> Chamada
+                </button>
+                <button class="nav-tab" onclick="showPage('reports')" id="reportsTab">
+                    <i class="fas fa-file-excel"></i> Relatórios
+                </button>
+                <button class="nav-tab" onclick="showPage('users')" id="usersTab">
+                    <i class="fas fa-user-cog"></i> Usuários
+                </button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Dashboard -->
+            <div id="dashboardPage" class="page active">
+                <h2><i class="fas fa-chart-pi"></i> Dashboard</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUnits">0</div>
+                        <div class="stat-label">Unidades</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalClasses">0</div>
+                        <div class="stat-label">Turmas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalStudents">0</div>
+                        <div class="stat-label">Estudantes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayAttendance">0</div>
+                        <div class="stat-label">Presenças Hoje</div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Bem-vindo ao Sistema!</strong> Use o menu acima para navegar entre as funcionalidades.
+                </div>
+            </div>
+
+            <!-- Unidades -->
+            <div id="unitsPage" class="page">
+                <h2><i class="fas fa-building"></i> Gerenciamento de Unidades</h2>
+                
+                <form id="unitForm" style="margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label for="unitName">Nome da Unidade</label>
+                            <input type="text" id="unitName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="unitAddress">Endereço</label>
+                            <input type="text" id="unitAddress" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="unitPhone">Telefone</label>
+                            <input type="tel" id="unitPhone" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Cadastrar Unidade
+                    </button>
+                </form>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Endereço</th>
+                            <th>Telefone</th>
+                            <th>Cursos Oferecidos</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="unitsTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Turmas -->
+            <div id="classesPage" class="page">
+                <h2><i class="fas fa-users"></i> Gerenciamento de Turmas</h2>
+                
+                <form id="classForm" style="margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label for="className">Nome da Turma</label>
+                            <input type="text" id="className" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="classUnit">Unidade</label>
+                            <select id="classUnit" onchange="updateCourseSelect()" required>
+                                <option value="">Selecione uma unidade</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="classCourse">Curso</label>
+                            <select id="classCourse" required>
+                                <option value="">Selecione um curso</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="classInstructor">Instrutor</label>
+                            <input type="text" id="classInstructor" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="classYear">Ano</label>
+                            <input type="number" id="classYear" min="2020" max="2030" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Cadastrar Turma
+                    </button>
+                </form>
+
+                <div style="margin-bottom: 20px;">
+                    <h3>Adicionar Estudantes</h3>
+                    <div style="display: flex; gap: 10px; align-items: end;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label for="studentClass">Turma</label>
+                            <select id="studentClass">
+                                <option value="">Selecione uma turma</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                            <label for="studentName">Nome do Estudante</label>
+                            <input type="text" id="studentName">
+                        </div>
+                        <button type="button" onclick="addStudent()" class="btn">
+                            <i class="fas fa-user-plus"></i> Adicionar
+                        </button>
+                    </div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Turma</th>
+                            <th>Unidade</th>
+                            <th>Instrutor</th>
+                            <th>Ano</th>
+                            <th>Estudantes</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="classesTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Chamada -->
+            <div id="attendancePage" class="page">
+                <h2><i class="fas fa-check-circle"></i> Registro de Presença</h2>
+                
+                <div style="display: flex; gap: 20px; align-items: end; margin-bottom: 30px;">
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label for="attendanceClass">Selecionar Turma</label>
+                        <select id="attendanceClass" onchange="loadAttendanceStudents()">
+                            <option value="">Selecione uma turma</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="attendanceDate">Data</label>
+                        <input type="date" id="attendanceDate">
+                    </div>
+                    <button onclick="saveAttendance()" class="btn btn-success">
+                        <i class="fas fa-save"></i> Salvar Presença
+                    </button>
+                </div>
+
+                <div id="attendanceStudents" class="attendance-grid">
+                    <div class="alert alert-info">
+                        Selecione uma turma para começar o registro de presença.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relatórios -->
+            <div id="reportsPage" class="page">
+                <h2><i class="fas fa-file-excel"></i> Relatórios</h2>
+                
+                <div style="display: flex; gap: 20px; align-items: end; margin-bottom: 30px;">
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label for="reportUnit">Unidade</label>
+                        <select id="reportUnit" onchange="updateReportClasses()">
+                            <option value="">Todas as unidades</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label for="reportClass">Turma</label>
+                        <select id="reportClass">
+                            <option value="">Todas as turmas</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="reportStartDate">Data Inicial</label>
+                        <input type="date" id="reportStartDate">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="reportEndDate">Data Final</label>
+                        <input type="date" id="reportEndDate">
+                    </div>
+                    <button onclick="generateReport()" class="btn btn-success">
+                        <i class="fas fa-download"></i> Gerar Excel
+                    </button>
+                </div>
+
+                <div id="reportPreview">
+                    <div class="alert alert-info">
+                        Configure os filtros acima e clique em "Gerar Excel" para baixar o relatório.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usuários (apenas Admin) -->
+            <div id="usersPage" class="page">
+                <h2><i class="fas fa-user-cog"></i> Gerenciamento de Usuários</h2>
+                
+                <form id="userForm" style="margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label for="userEmail">Email</label>
+                            <input type="email" id="userEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userName">Nome</label>
+                            <input type="text" id="userName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userPassword">Senha</label>
+                            <input type="password" id="userPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userType">Tipo</label>
+                            <select id="userType" required>
+                                <option value="">Selecione...</option>
+                                <option value="instructor">Instrutor</option>
+                                <option value="pedagogue">Pedagogo</option>
+                                <option value="monitor">Monitor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="userUnit">Unidade</label>
+                            <select id="userUnit" required>
+                                <option value="">Selecione uma unidade</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-user-plus"></i> Cadastrar Usuário
+                    </button>
+                </form>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>E-mail</th>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Unidade</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Gerenciamento de Cursos -->
+    <div id="coursesModal" class="modal hidden" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-graduation-cap"></i> Cursos da Unidade: <span id="modalUnitName"></span></h2>
+                <button class="close-button" onclick="closeCoursesModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Lista de cursos existentes -->
+                <div id="existingCoursesContainer">
+                    <h3>Cursos Cadastrados</h3>
+                    <table class="table" id="coursesTable">
+                        <thead>
+                            <tr>
+                                <th>Nome do Curso</th>
+                                <th>Período</th>
+                                <th>Turmas</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coursesTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Formulário para adicionar novo curso -->
+                <div id="newCourseFormContainer" style="margin-top: 30px;">
+                    <h3>Adicionar Novo Curso</h3>
+                    <form id="courseForm" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
+                        <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                            <label for="courseName">Nome do Curso</label>
+                            <input type="text" id="courseName" required>
+                        </div>
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label for="coursePeriod">Período</label>
+                            <select id="coursePeriod" required>
+                                <option value="Manhã">Manhã</option>
+                                <option value="Tarde">Tarde</option>
+                                <option value="Noite">Noite</option>
+                                <option value="Integral">Integral</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success" style="height: 47px;">
+                            <i class="fas fa-plus"></i> Adicionar Curso
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

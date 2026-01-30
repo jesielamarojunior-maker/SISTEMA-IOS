@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Instituto da Oportunidade Social</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <img src="assets/logo.svg" alt="Logo IOS" class="logo">
+        <h1>Login</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Entrar</button>
+        </form>
+        <div id="error-message" class="error-message"></div>
+    </div>
+    <script src="../src/auth.js"></script>
+</body>
+</html>

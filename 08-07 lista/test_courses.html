@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Cadastro de Cursos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            color: #2e7d32;
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        button {
+            background: #1976d2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1565c0;
+        }
+        .log {
+            background: #333;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste de Sistema de Cadastro de Cursos</h1>
+    
+    <div class="test-section">
+        <h2>1. Teste de Inicialização</h2>
+        <button onclick="testInitialization()">Testar Inicialização</button>
+        <div id="initResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Teste de Login</h2>
+        <button onclick="testLogin()">Fazer Login como Admin</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Teste de Cadastro de Curso</h2>
+        <button onclick="testCourseRegistration()">Cadastrar Curso de Teste</button>
+        <div id="courseResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Verificar Dados</h2>
+        <button onclick="checkData()">Verificar Dados no LocalStorage</button>
+        <div id="dataResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Console Log</h2>
+        <div id="consoleLog" class="log"></div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        // Interceptar console.log para mostrar na página
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const logDiv = document.getElementById('consoleLog');
+            logDiv.innerHTML += args.join(' ') + '\n';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        };
+
+        function showResult(elementId, message, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${isSuccess ? 'success' : 'error'}">${message}</div>`;
+        }
+
+        function testInitialization() {
+            console.log("🧪 Testando inicialização...");
+            
+            try {
+                // Verificar se DataManager foi inicializado
+                if (typeof window.dataManager === 'undefined') {
+                    throw new Error("DataManager não foi inicializado");
+                }
+
+                // Verificar se as variáveis globais existem
+                if (!window.users || !window.units || !window.courses) {
+                    throw new Error("Variáveis globais não foram inicializadas");
+                }
+
+                // Verificar se há dados iniciais
+                const coursesCount = window.courses.length;
+                const unitsCount = window.units.length;
+                const usersCount = window.users.length;
+
+                showResult('initResult', `✅ Inicialização OK!<br>
+                    Usuários: ${usersCount}<br>
+                    Unidades: ${unitsCount}<br>
+                    Cursos: ${coursesCount}`);
+                
+                console.log("✅ Inicialização testada com sucesso");
+                
+            } catch (error) {
+                showResult('initResult', `❌ Erro na inicialização: ${error.message}`, false);
+                console.error("❌ Erro na inicialização:", error);
+            }
+        }
+
+        function testLogin() {
+            console.log("🧪 Testando login...");
+            
+            try {
+                // Simular login como admin
+                const adminUser = window.users.find(u => u.email === 'admin@ios.org.br');
+                
+                if (!adminUser) {
+                    throw new Error("Usuário admin não encontrado");
+                }
+
+                // Definir como usuário atual
+                window.currentUser = adminUser;
+                
+                showResult('loginResult', `✅ Login OK!<br>
+                    Usuário: ${adminUser.name}<br>
+                    Tipo: ${adminUser.type}<br>
+                    Email: ${adminUser.email}`);
+                
+                console.log("✅ Login testado com sucesso");
+                
+            } catch (error) {
+                showResult('loginResult', `❌ Erro no login: ${error.message}`, false);
+                console.error("❌ Erro no login:", error);
+            }
+        }
+
+        function testCourseRegistration() {
+            console.log("🧪 Testando cadastro de curso...");
+            
+            try {
+                // Verificar se há usuário logado
+                if (!window.currentUser) {
+                    throw new Error("Usuário não está logado");
+                }
+
+                // Sincronizar variáveis
+                if (typeof window.syncGlobalVariables === 'function') {
+                    window.syncGlobalVariables();
+                }
+
+                // Verificar se há unidades disponíveis
+                if (!window.units || window.units.length === 0) {
+                    throw new Error("Nenhuma unidade disponível");
+                }
+
+                // Criar um curso de teste
+                const testCourse = {
+                    id: Date.now(),
+                    name: "Curso de Teste " + Date.now(),
+                    description: "Descrição do curso de teste",
+                    duration: 40,
+                    unitId: window.units[0].id,
+                    status: "active",
+                    createdAt: new Date().toISOString(),
+                };
+
+                // Adicionar curso ao array
+                window.courses.push(testCourse);
+                
+                // Salvar dados
+                if (typeof window.saveData === 'function') {
+                    window.saveData();
+                }
+
+                showResult('courseResult', `✅ Curso cadastrado!<br>
+                    Nome: ${testCourse.name}<br>
+                    Duração: ${testCourse.duration}h<br>
+                    Unidade: ${window.units[0].name}<br>
+                    Total de cursos: ${window.courses.length}`);
+                
+                console.log("✅ Curso cadastrado com sucesso");
+                
+            } catch (error) {
+                showResult('courseResult', `❌ Erro no cadastro: ${error.message}`, false);
+                console.error("❌ Erro no cadastro:", error);
+            }
+        }
+
+        function checkData() {
+            console.log("🧪 Verificando dados...");
+            
+            try {
+                // Verificar localStorage
+                const stored = localStorage.getItem('ios_attendance_system');
+                if (!stored) {
+                    throw new Error("Nenhum dado no localStorage");
+                }
+
+                const data = JSON.parse(stored);
+                
+                const html = `
+                    <strong>Dados no LocalStorage:</strong><br>
+                    Usuários: ${data.users?.length || 0}<br>
+                    Unidades: ${data.units?.length || 0}<br>
+                    Cursos: ${data.courses?.length || 0}<br>
+                    Turmas: ${data.classes?.length || 0}<br>
+                    Estudantes: ${data.students?.length || 0}<br>
+                    <br>
+                    <strong>Dados em Memória:</strong><br>
+                    Usuários: ${window.users?.length || 0}<br>
+                    Unidades: ${window.units?.length || 0}<br>
+                    Cursos: ${window.courses?.length || 0}<br>
+                    Turmas: ${window.classes?.length || 0}<br>
+                    Estudantes: ${window.students?.length || 0}
+                `;
+                
+                showResult('dataResult', html);
+                console.log("✅ Dados verificados");
+                
+            } catch (error) {
+                showResult('dataResult', `❌ Erro ao verificar dados: ${error.message}`, false);
+                console.error("❌ Erro ao verificar dados:", error);
+            }
+        }
+
+        // Executar teste de inicialização automaticamente
+        setTimeout(() => {
+            testInitialization();
+        }, 1000);
+    </script>
+</body>
+</html>

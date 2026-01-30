@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Agendamentos - Barber Shop</title>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+
+<body>
+    <header>
+        <div id="box">
+            <h1><img src="imgs/logo.png" alt="logo of Barber Shop"></h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="booking.html">Agendamentos</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="main">
+            <h2 class="title_main">Agendamentos</h2>
+            <form id="bookingForm" action="/agendar" method="POST">
+                <legend>Preencha seus dados para agendar um horário:</legend>
+
+                <label for="name">Nome:</label>
+                <input type="text" id="name" name="name" class="input-pattern" required>
+
+                <label for="phone">WhatsApp:</label>
+                <input type="tel" id="phone" name="phone" class="input-pattern" required>
+
+                <label for="date">Data do Agendamento:</label>
+                <button type="button" id="calendarBtn">Selecionar Data</button>
+                <input type="text" id="date" name="date" class="input-pattern" required style="display:none;">
+
+                <label for="time">Hora do Agendamento:</label>
+                <button type="button" id="timeBtn">Selecionar Hora</button>
+                <input type="text" id="time" name="time" class="input-pattern" required style="display:none;">
+
+                <!-- Procedimentos Individuais -->
+                <h3 class="toggle-section" onclick="toggleSection('procedures')">Escolha seu Procedimento:</h3>
+                <div id="procedures" class="collapsible">
+                    <div class="procedure">
+                        <label>
+                            <input type="checkbox" name="procedures" value="25" onchange="updateTotal()"> Corte Básico -
+                            R$ 25,00
+                        </label>
+                    </div>
+                    <div class="procedure">
+                        <label>
+                            <input type="checkbox" name="procedures" value="5" onchange="updateTotal()"> Sobrancelha -
+                            R$ 5,00
+                        </label>
+                    </div>
+                    <div class="procedure">
+                        <label>
+                            <input type="checkbox" name="procedures" value="20" onchange="updateTotal()"> Barba - R$
+                            20,00
+                        </label>
+                    </div>
+                </div>
+
+
+
+                <!-- Procedimentos Combinados -->
+                <h3 class="toggle-section" onclick="toggleSection('combined-procedures')">Escolha uma Combinação de
+                    Procedimentos:</h3>
+                <div id="combined-procedures" class="collapsible">
+                    <div class="procedure">
+                        <label>
+                            <input type="radio" name="combo" value="30" onchange="updateTotalCombo()"> Corte Básico +
+                            Sobrancelha - R$ 30,00
+                        </label>
+                    </div>
+                    <div class="procedure">
+                        <label>
+                            <input type="radio" name="combo" value="45" onchange="updateTotalCombo()"> Corte Básico +
+                            Barba - R$ 45,00
+                        </label>
+                    </div>
+                    <div class="procedure">
+                        <label>
+                            <input type="radio" name="combo" value="50" onchange="updateTotalCombo()"> Corte Básico +
+                            Barba + Sobrancelha - R$ 50,00
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="save">Agendar</button>
+            </form>
+
+            <div class="confirmation-page">
+                <p class="thank-you-message" style="text-align: center;">Obrigado por agendar! Clique no botão abaixo
+                    para nos seguir no Instagram.</p>
+                <a href="https://www.instagram.com/MacielsBarberStudio" class="save" target="_blank">Siga-nos no
+                    Instagram</a>
+            </div>
+
+            <div id="thankYouMessage" style="display: none;">
+                <h3>Obrigado pela preferência e até breve!</h3>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <img src="imgs/logo-white.png" alt="logo of Barber Shop">
+        <p class="copyright">&copy; Copyright: Jesiel Junior. 2024</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            flatpickr("#date", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+            });
+
+            flatpickr("#time", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+            });
+
+            document.getElementById('calendarBtn').onclick = function () {
+                document.getElementById('date').click();
+            };
+
+            document.getElementById('timeBtn').onclick = function () {
+                document.getElementById('time').click();
+            };
+        });
+
+        document.getElementById('bookingForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evita que o formulário seja realmente enviado
+
+            // Esconder o formulário de agendamento
+            document.getElementById('bookingForm').style.display = 'none';
+
+            // Exibir a mensagem de agradecimento
+            document.getElementById('thankYouMessage').style.display = 'block';
+        });
+
+        document.querySelectorAll('.toggle-section').forEach(section => {
+            section.addEventListener('click', () => {
+                const collapsible = section.nextElementSibling;
+                if (collapsible.style.display === "block") {
+                    collapsible.style.display = "none";
+                } else {
+                    collapsible.style.display = "block";
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

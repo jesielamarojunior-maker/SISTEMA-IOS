@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Sincronização - IOS</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Teste de Correção do Sistema IOS</h1>
+    
+    <div class="test-section">
+        <h3>1. Teste de localStorage</h3>
+        <button onclick="testLocalStorage()">Testar localStorage</button>
+        <div id="localStorageResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Teste de Sincronização de Arrays</h3>
+        <button onclick="testArraySync()">Testar Sincronização</button>
+        <div id="arraySyncResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Teste de Adição de Usuário</h3>
+        <button onclick="testAddUser()">Simular Adicionar Usuário</button>
+        <div id="addUserResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Dados Atuais</h3>
+        <button onclick="showCurrentData()">Mostrar Dados</button>
+        <div id="currentDataResult"></div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        function testLocalStorage() {
+            const result = document.getElementById('localStorageResult');
+            try {
+                // Testar se localStorage está funcionando
+                const testKey = 'test_key';
+                const testValue = 'test_value';
+                localStorage.setItem(testKey, testValue);
+                const retrieved = localStorage.getItem(testKey);
+                localStorage.removeItem(testKey);
+                
+                if (retrieved === testValue) {
+                    result.innerHTML = '<div class="success">✅ localStorage funcionando corretamente</div>';
+                } else {
+                    result.innerHTML = '<div class="error">❌ localStorage não está funcionando</div>';
+                }
+            } catch (e) {
+                result.innerHTML = `<div class="error">❌ Erro no localStorage: ${e.message}</div>`;
+            }
+        }
+        
+        function testArraySync() {
+            const result = document.getElementById('arraySyncResult');
+            try {
+                // Verificar se as variáveis globais existem
+                const checks = [
+                    { name: 'window.users', exists: Array.isArray(window.users), count: window.users?.length || 0 },
+                    { name: 'window.units', exists: Array.isArray(window.units), count: window.units?.length || 0 },
+                    { name: 'window.courses', exists: Array.isArray(window.courses), count: window.courses?.length || 0 },
+                    { name: 'users (local)', exists: typeof users !== 'undefined' && Array.isArray(users), count: typeof users !== 'undefined' ? users.length : 0 },
+                    { name: 'units (local)', exists: typeof units !== 'undefined' && Array.isArray(units), count: typeof units !== 'undefined' ? units.length : 0 }
+                ];
+                
+                let html = '<div class="success"><h4>Status das Variáveis:</h4><ul>';
+                checks.forEach(check => {
+                    const status = check.exists ? '✅' : '❌';
+                    html += `<li>${status} ${check.name}: ${check.exists ? `${check.count} items` : 'não existe'}</li>`;
+                });
+                html += '</ul></div>';
+                
+                result.innerHTML = html;
+            } catch (e) {
+                result.innerHTML = `<div class="error">❌ Erro na verificação: ${e.message}</div>`;
+            }
+        }
+        
+        function testAddUser() {
+            const result = document.getElementById('addUserResult');
+            try {
+                if (typeof window.users === 'undefined') {
+                    result.innerHTML = '<div class="error">❌ window.users não está definido</div>';
+                    return;
+                }
+                
+                const initialCount = window.users.length;
+                
+                // Simular adição de usuário
+                const testUser = {
+                    id: Date.now(),
+                    name: "Teste User",
+                    email: "teste@ios.org.br",
+                    type: "instructor",
+                    status: "active"
+                };
+                
+                // Método antigo (problemático)
+                if (typeof users !== 'undefined') {
+                    users.push(testUser);
+                }
+                
+                // Método correto
+                window.users.push(testUser);
+                
+                const finalCount = window.users.length;
+                
+                let html = `<div class="success">
+                    <h4>Resultado do Teste:</h4>
+                    <ul>
+                        <li>Usuários antes: ${initialCount}</li>
+                        <li>Usuários depois: ${finalCount}</li>
+                        <li>Usuário foi adicionado: ${finalCount > initialCount ? '✅' : '❌'}</li>
+                    </ul>
+                </div>`;
+                
+                result.innerHTML = html;
+                
+                // Limpar o usuário de teste
+                window.users.pop();
+                
+            } catch (e) {
+                result.innerHTML = `<div class="error">❌ Erro no teste: ${e.message}</div>`;
+            }
+        }
+        
+        function showCurrentData() {
+            const result = document.getElementById('currentDataResult');
+            try {
+                const data = {
+                    users: window.users || [],
+                    units: window.units || [],
+                    courses: window.courses || [],
+                    classes: window.classes || [],
+                    students: window.students || []
+                };
+                
+                let html = `<div class="success">
+                    <h4>Dados Atuais no Sistema:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+                
+                result.innerHTML = html;
+            } catch (e) {
+                result.innerHTML = `<div class="error">❌ Erro ao mostrar dados: ${e.message}</div>`;
+            }
+        }
+        
+        // Auto-executar alguns testes
+        setTimeout(() => {
+            testLocalStorage();
+            testArraySync();
+        }, 1000);
+    </script>
+</body>
+</html>

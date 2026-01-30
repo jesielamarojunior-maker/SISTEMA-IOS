@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema IOS - Teste Frontend</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button { margin: 5px; padding: 10px 15px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Sistema IOS - Teste Frontend</h1>
+    <div id="results"></div>
+    
+    <h2>Testes Manuais</h2>
+    <button onclick="testLogin()">Testar Login</button>
+    <button onclick="testNavigation()">Testar Navegação</button>
+    <button onclick="testForms()">Testar Formulários</button>
+    <button onclick="testEnhancedFeatures()">Testar Funcionalidades Melhoradas</button>
+    
+    <h2>Aplicação IOS</h2>
+    <iframe id="iosFrame" src="http://localhost:8000" width="100%" height="800px" style="border: 1px solid #ccc;"></iframe>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `${new Date().toLocaleTimeString()} - ${message}`;
+            results.appendChild(div);
+        }
+
+        function testLogin() {
+            addResult('🔍 Testando sistema de login...', 'info');
+            
+            const iframe = document.getElementById('iosFrame');
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                // Verificar se elementos de login existem
+                const emailField = iframeDoc.getElementById('email');
+                const passwordField = iframeDoc.getElementById('password');
+                const userTypeField = iframeDoc.getElementById('userType');
+                const loginButton = iframeDoc.querySelector('.btn-login');
+                
+                if (emailField && passwordField && userTypeField && loginButton) {
+                    addResult('✅ Elementos de login encontrados', 'success');
+                    
+                    // Testar preenchimento automático
+                    emailField.value = 'admin@ios.org.br';
+                    passwordField.value = 'admin123';
+                    userTypeField.value = 'admin';
+                    
+                    addResult('✅ Campos preenchidos automaticamente', 'success');
+                    addResult('ℹ️ Clique no botão "Entrar no sistema" para testar o login', 'info');
+                } else {
+                    addResult('❌ Elementos de login não encontrados', 'error');
+                }
+            } catch (e) {
+                addResult(`❌ Erro ao acessar iframe: ${e.message}`, 'error');
+            }
+        }
+
+        function testNavigation() {
+            addResult('🔍 Testando navegação...', 'info');
+            
+            const iframe = document.getElementById('iosFrame');
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                // Verificar se abas de navegação existem
+                const navTabs = iframeDoc.querySelectorAll('.nav-tab');
+                if (navTabs.length > 0) {
+                    addResult(`✅ ${navTabs.length} abas de navegação encontradas`, 'success');
+                    
+                    const tabNames = Array.from(navTabs).map(tab => tab.textContent.trim());
+                    addResult(`📋 Abas: ${tabNames.join(', ')}`, 'info');
+                } else {
+                    addResult('❌ Abas de navegação não encontradas', 'error');
+                }
+            } catch (e) {
+                addResult(`❌ Erro ao testar navegação: ${e.message}`, 'error');
+            }
+        }
+
+        function testForms() {
+            addResult('🔍 Testando formulários...', 'info');
+            
+            const iframe = document.getElementById('iosFrame');
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                // Verificar formulário melhorado de turmas
+                const enhancedClassForm = iframeDoc.getElementById('enhancedClassForm');
+                if (enhancedClassForm) {
+                    addResult('✅ Formulário melhorado de turmas encontrado', 'success');
+                    
+                    // Verificar campos específicos
+                    const requiredFields = [
+                        'className', 'classUnit', 'classCourse', 
+                        'classInstructorId', 'classMonitorId', 'classPedagogueId'
+                    ];
+                    
+                    let foundFields = 0;
+                    requiredFields.forEach(fieldId => {
+                        if (iframeDoc.getElementById(fieldId)) {
+                            foundFields++;
+                        }
+                    });
+                    
+                    addResult(`✅ ${foundFields}/${requiredFields.length} campos do formulário encontrados`, 'success');
+                } else {
+                    addResult('❌ Formulário melhorado de turmas não encontrado', 'error');
+                }
+                
+                // Verificar formulário de estudantes
+                const studentFields = ['studentClass', 'studentName', 'studentCpf'];
+                let studentFieldsFound = 0;
+                studentFields.forEach(fieldId => {
+                    if (iframeDoc.getElementById(fieldId)) {
+                        studentFieldsFound++;
+                    }
+                });
+                
+                if (studentFieldsFound === studentFields.length) {
+                    addResult('✅ Formulário de estudantes com CPF encontrado', 'success');
+                } else {
+                    addResult(`⚠️ Formulário de estudantes incompleto: ${studentFieldsFound}/${studentFields.length}`, 'error');
+                }
+                
+            } catch (e) {
+                addResult(`❌ Erro ao testar formulários: ${e.message}`, 'error');
+            }
+        }
+
+        function testEnhancedFeatures() {
+            addResult('🔍 Testando funcionalidades melhoradas...', 'info');
+            
+            const iframe = document.getElementById('iosFrame');
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const iframeWindow = iframe.contentWindow;
+                
+                // Verificar se funções melhoradas existem
+                const enhancedFunctions = [
+                    'addEnhancedClass',
+                    'addEnhancedStudent', 
+                    'loadEnhancedClasses',
+                    'fillInstructorData',
+                    'fillMonitorData',
+                    'fillPedagogueData'
+                ];
+                
+                let functionsFound = 0;
+                enhancedFunctions.forEach(funcName => {
+                    if (typeof iframeWindow[funcName] === 'function') {
+                        functionsFound++;
+                    }
+                });
+                
+                addResult(`✅ ${functionsFound}/${enhancedFunctions.length} funções melhoradas encontradas`, 'success');
+                
+                // Verificar estrutura de equipe
+                const teamSections = iframeDoc.querySelectorAll('.team-member-group');
+                if (teamSections.length >= 3) {
+                    addResult('✅ Seções de equipe (Professor, Monitor, Pedagoga) encontradas', 'success');
+                } else {
+                    addResult(`⚠️ Seções de equipe incompletas: ${teamSections.length}/3`, 'error');
+                }
+                
+                // Verificar seções de horário
+                const scheduleSections = iframeDoc.querySelectorAll('.schedule-group');
+                if (scheduleSections.length >= 2) {
+                    addResult('✅ Seções de horário (Principal + Extensão) encontradas', 'success');
+                } else {
+                    addResult(`⚠️ Seções de horário incompletas: ${scheduleSections.length}/2`, 'error');
+                }
+                
+            } catch (e) {
+                addResult(`❌ Erro ao testar funcionalidades melhoradas: ${e.message}`, 'error');
+            }
+        }
+
+        // Auto-executar alguns testes quando a página carregar
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                addResult('🚀 Sistema de teste carregado', 'success');
+                addResult('ℹ️ Use os botões acima para testar diferentes funcionalidades', 'info');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

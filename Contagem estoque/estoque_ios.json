@@ -1,0 +1,91 @@
+{
+  "unidades": {
+    "Santana Geral - SP": {
+      "vagas": 100,
+      "estoque_atual": {
+        "IOS_REACT": {
+          "PP": 5,
+          "P": 15,
+          "M": 25,
+          "G": 20,
+          "GG": 10,
+          "XG": 3,
+          "XXG": 1,
+          "ESP": 1
+        },
+        "FLUTTER_PYTHON": {
+          "PP": 2,
+          "P": 8,
+          "M": 12,
+          "G": 15,
+          "GG": 8,
+          "XG": 2,
+          "XXG": 1,
+          "ESP": 0
+        },
+        "FIGMA_NODEJS": {
+          "PP": 0,
+          "P": 5,
+          "M": 10,
+          "G": 8,
+          "GG": 5,
+          "XG": 1,
+          "XXG": 0,
+          "ESP": 0
+        },
+        "FUMCAD_SEM MANGA": {
+          "PP": 0,
+          "P": 1,
+          "M": 9,
+          "G": 18,
+          "GG": 30,
+          "XG": 15,
+          "XXG": 29,
+          "ESP": 0
+        },
+        "0_0": {
+          "PP": 0,
+          "P": 0,
+          "M": 0,
+          "G": 0,
+          "GG": 0,
+          "XG": 0,
+          "XXG": 0,
+          "ESP": 0
+        },
+        "DELL_SEM MANGA": {
+          "PP": 0,
+          "P": 0,
+          "M": 20,
+          "G": 1,
+          "GG": 32,
+          "XG": 20,
+          "XXG": 15,
+          "ESP": 1
+        },
+        "TOTVS_SEM MANGA": {
+          "PP": 0,
+          "P": 6,
+          "M": 2,
+          "G": 64,
+          "GG": 84,
+          "XG": 31,
+          "XXG": 34,
+          "ESP": 21
+        },
+        "SEM PARCEIRO_SEM MANGA": {
+          "PP": 0,
+          "P": 4,
+          "M": 3,
+          "G": 2,
+          "GG": 18,
+          "XG": 4,
+          "XXG": 0,
+          "ESP": 0
+        }
+      },
+      "historico_semestres": [],
+      "ultima_atualizacao": "2025-06-27T16:15:31.574564"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+
+<!-- Tela de Chamada - Estilo IOS com suporte a justificativa, anexo e observacao -->
+<section id="attendancePage" class="content hidden">
+  <div class="header">
+    <div class="logo">
+      <h1>Registro de Presença</h1>
+      <p class="subtitle">Curso: <span id="cursoAtual"></span> | Turma: <span id="turmaAtual"></span> | Data: <input type="date" id="dataChamada" /></p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="topicos">Tópicos abordados na aula:</label>
+    <textarea id="topicos" class="form-group" rows="2" placeholder="Ex: Variáveis, estruturas de repetição..."></textarea>
+  </div>
+
+  <table class="tabela-presenca">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Presente</th>
+        <th>Justificativa</th>
+        <th>Atestado</th>
+        <th>Observação</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaAlunos">
+      <!-- Linhas dos alunos serão inseridas via JS -->
+    </tbody>
+  </table>
+
+  <div class="acoes-chamada">
+    <button class="btn-secundario" onclick="showPage('dashboard')">Voltar</button>
+    <button class="btn-primario" id="salvarChamada">Salvar e Retornar</button>
+  </div>
+</section>

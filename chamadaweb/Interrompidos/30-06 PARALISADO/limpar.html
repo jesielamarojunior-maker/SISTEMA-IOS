@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Limpar Storage</title>
+</head>
+<body>
+    <h1>Limpando localStorage...</h1>
+    <script>
+        localStorage.removeItem('ios_attendance_system');
+        console.log('localStorage limpo!');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
+    </script>
+</body>
+</html>

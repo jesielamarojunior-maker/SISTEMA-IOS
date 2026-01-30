@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instituto da Oportunidade Social - Sistema de Chamada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div id="editUserModal" style="display:none;"></div>
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-graduation-cap"></i>
+                <h2>IOS</h2>
+                <p>Instituto da Oportunidade Social</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="userType">Tipo de usuário</label>
+                    <select id="userType" required>
+                        <option value="">Selecione...</option>
+                        <option value="admin">Administrador Master</option>
+                        <option value="instructor">Instrutor</option>
+                        <option value="pedagogue">Pedagogo</option>
+                        <option value="monitor">Monitor</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-login">
+                    Entrar no sistema
+                </button>
+            </form>
+            
+            <div class="login-divider">
+                <span>ou</span>
+            </div>
+            
+            <button type="button" class="btn-first-access" onclick="openFirstAccessModal()">
+                <i class="fas fa-user-plus"></i> Primeiro Acesso
+            </button>
+            
+            <div id="loginAlert" class="alert alert-error hidden">
+                Credenciais inválidas! Tente novamente.
+            </div>
+            <div class="test-users">
+                <strong>Usuários de Teste:</strong><br>
+                Admin: admin@ios.org.br / admin123<br>
+                Instrutor: instrutor@ios.org.br / inst123<br>
+                Pedagogo: pedagogo@ios.org.br / ped123<br>
+                Monitor: monitor@ios.org.br / mon123
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Primeiro Acesso -->
+    <div id="firstAccessModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Primeiro Acesso - IOS</h3>
+                <button onclick="closeFirstAccessModal()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Bem-vindo ao Sistema IOS!</strong><br>
+                        Complete seu cadastro usando seu e-mail institucional @ios.org.br
+                    </div>
+                </div>
+                
+                <form id="firstAccessForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstAccessName">Nome Completo *</label>
+                            <input type="text" id="firstAccessName" required placeholder="Digite seu nome completo">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstAccessCpf">CPF *</label>
+                            <input type="text" id="firstAccessCpf" required placeholder="000.000.000-00" maxlength="14">
+                        </div>
+                        <div class="form-group">
+                            <label for="firstAccessPhone">Telefone</label>
+                            <input type="tel" id="firstAccessPhone" placeholder="(00) 00000-0000">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstAccessEmail">E-mail Institucional *</label>
+                            <input type="email" id="firstAccessEmail" required placeholder="seu.nome@ios.org.br">
+                            <small class="form-help">Apenas e-mails @ios.org.br são aceitos</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstAccessRole">Função no IOS *</label>
+                            <select id="firstAccessRole" required>
+                                <option value="">Selecione sua função...</option>
+                                <option value="instructor">Instrutor</option>
+                                <option value="pedagogue">Pedagogo</option>
+                                <option value="monitor">Monitor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="firstAccessUnit">Unidade de Trabalho *</label>
+                            <select id="firstAccessUnit" required>
+                                <option value="">Selecione sua unidade...</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstAccessPassword">Criar Senha *</label>
+                            <input type="password" id="firstAccessPassword" required placeholder="Mínimo 6 caracteres">
+                        </div>
+                        <div class="form-group">
+                            <label for="firstAccessPasswordConfirm">Confirmar Senha *</label>
+                            <input type="password" id="firstAccessPasswordConfirm" required placeholder="Repita a senha">
+                        </div>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" id="firstAccessTerms" required>
+                        <label for="firstAccessTerms">
+                            Concordo com os termos de uso do sistema e autorizo o tratamento dos meus dados pessoais conforme a LGPD
+                        </label>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeFirstAccessModal()">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Finalizar Cadastro
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="firstAccessAlert" class="alert alert-error hidden"></div>
+                <div id="firstAccessSuccess" class="alert alert-success hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainSystem" class="container hidden">
+        <div class="header">
+            <div class="logo">
+                <div>
+                    <h1><i class="fas fa-graduation-cap"></i> Instituto da Oportunidade Social</h1>
+                    <div class="subtitle">Sistema de Controle de Presença</div>
+                </div>
+            </div>
+            <div id="userInfo" class="user-info">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div>
+                    <div id="userDisplayName" style="font-weight: 600;"></div>
+                    <div id="userDisplayRole" style="color: #718096; font-size: 0.9rem;"></div>
+                </div>
+                <button class="btn btn-danger" onclick="logout()" style="margin-left: auto;">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showPage('dashboard')">
+                    <i class="fas fa-chart-pie"></i> Dashboard
+                </button>
+                <button class="nav-tab" onclick="showPage('users')" id="usersTab">
+                    <i class="fas fa-user-plus"></i> Usuários
+                </button>
+                <button class="nav-tab" onclick="showPage('units')" id="unitsTab">
+                    <i class="fas fa-building"></i> Unidades
+                </button>
+                <button class="nav-tab" onclick="showPage('courses')" id="coursesTab">
+                    <i class="fas fa-book"></i> Cursos
+                </button>
+                <button class="nav-tab" onclick="showPage('classes')">
+                    <i class="fas fa-users"></i> Turmas
+                </button>
+                <button class="nav-tab" onclick="showPage('attendance')">
+                    <i class="fas fa-check-circle"></i> Chamada
+                </button>
+                <button class="nav-tab" onclick="showPage('reports')" id="reportsTab">
+                    <i class="fas fa-file-excel"></i> Relatórios
+                </button>
+                <button class="nav-tab" onclick="showPage('data-management')" id="dataManagementTab">
+                    <i class="fas fa-database"></i> Dados
+                </button>
+            </div>
+        </div>
+        <div class="content">
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page active">
+                <h2><i class="fas fa-chart-pie"></i> Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUnits">0</div>
+                        <div class="stat-label">Unidades</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalClasses">0</div>
+                        <div class="stat-label">Turmas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalStudents">0</div>
+                        <div class="stat-label">Estudantes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayAttendance">0</div>
+                        <div class="stat-label">Presenças Hoje</div>
+                    </div>
+                    <div class="stat-card" id="highestAttendanceCard" style="display: none;">
+                        <div class="stat-number" id="highestAttendance">-</div>
+                        <div class="stat-label">Maior Frequência</div>
+                    </div>
+                    <div class="stat-card" id="highestAbsenceCard" style="display: none;">
+                        <div class="stat-number" id="highestAbsence">-</div>
+                        <div class="stat-label">Maior Faltas</div>
+                    </div>
+                    <div class="stat-card" id="dropoutsCard" style="display: none;">
+                        <div class="stat-number" id="totalDropouts">0</div>
+                        <div class="stat-label">Desistentes</div>
+                    </div>
+                </div>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Use o menu acima para navegar entre as funcionalidades.
+                </div>
+            </div>
+
+            <!-- Users Management Page -->
+            <div id="usersPage" class="page">
+                <h2><i class="fas fa-user-plus"></i> Gerenciamento de Usuários</h2>
+                
+                <!-- Seção para Cadastros Pendentes -->
+                <div id="pendingUsersSection" class="report-card" style="margin-bottom: 30px;">
+                    <div class="report-header">
+                        <h3><i class="fas fa-clock"></i> Cadastros Pendentes de Aprovação</h3>
+                    </div>
+                    <div id="pendingUsersContainer">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Nenhum cadastro pendente no momento.
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="userForm" style="margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label for="userName">Nome Completo</label>
+                            <input type="text" id="userName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userCpf">CPF</label>
+                            <input type="text" id="userCpf" required maxlength="14" placeholder="000.000.000-00">
+                        </div>
+                        <div class="form-group">
+                            <label for="userEmailCreate">E-mail Institucional</label>
+                            <input type="email" id="userEmailCreate" required placeholder="@ios.org.br">
+                        </div>
+                        <div class="form-group">
+                            <label for="userPassword">Senha Temporária</label>
+                            <input type="password" id="userPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userRole">Tipo de Usuário</label>
+                            <select id="userRole" required>
+                                <option value="">Selecione...</option>
+                                <option value="admin">Administrador Master</option>
+                                <option value="instructor">Instrutor</option>
+                                <option value="pedagogue">Pedagogo</option>
+                                <option value="monitor">Monitor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="userUnit">Unidade (apenas para não-admin)</label>
+                            <select id="userUnit">
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Cadastrar Usuário
+                    </button>
+                    
+                    <!-- Botão de teste e diagnóstico (pode ser removido em produção) -->
+                    <div style="margin-top: 10px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; display: none;" id="testSection">
+                        <small style="color: #856404; font-weight: 500;">🧪 Ferramentas de Diagnóstico:</small><br>
+                        <button type="button" onclick="diagnosticoCompleto()" class="btn" style="margin: 5px 5px 0 0; font-size: 0.8rem; padding: 5px 10px;">
+                            🔍 Diagnóstico
+                        </button>
+                        <button type="button" onclick="testarCadastroCompleto()" class="btn" style="margin: 5px 5px 0 0; font-size: 0.8rem; padding: 5px 10px;">
+                            🧪 Teste Cadastro
+                        </button>
+                        <button type="button" onclick="document.getElementById('testSection').style.display='none'" class="btn" style="margin: 5px 5px 0 0; font-size: 0.8rem; padding: 5px 10px;">
+                            ❌ Fechar
+                        </button>
+                    </div>
+                    
+                    <!-- Mostrar botão de teste apenas se pressionado Ctrl+Shift+T -->
+                    <script>
+                        document.addEventListener('keydown', function(e) {
+                            if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                                const testSection = document.getElementById('testSection');
+                                testSection.style.display = testSection.style.display === 'none' ? 'block' : 'none';
+                                e.preventDefault();
+                            }
+                        });
+                    </script>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>E-mail</th>
+                            <th>Tipo</th>
+                            <th>Unidade</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+            <div id="unitsPage" class="page">
+                <h2><i class="fas fa-building"></i> Gerenciamento de Unidades</h2>
+                <form id="unitForm" style="margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div class="form-group"><label for="unitName">Nome da Unidade</label><input type="text" id="unitName" required></div>
+                        <div class="form-group"><label for="unitAddress">Endereço</label><input type="text" id="unitAddress" required></div>
+                        <div class="form-group"><label for="unitPhone">Telefone</label><input type="tel" id="unitPhone" required></div>
+                    </div>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Cadastrar Unidade</button>
+                </form>
+                <table class="table"><thead><tr><th>Unidade</th><th>Telefone</th><th>Cursos & Turmas</th><th>Ações</th></tr></thead><tbody id="unitsTableBody"></tbody></table>
+            </div>
+            <div id="classesPage" class="page">
+                <h2><i class="fas fa-users"></i> Gerenciamento de Turmas</h2>
+                <form id="classForm" style="margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div class="form-group"><label for="className">Nome da Turma</label><input type="text" id="className" required></div>
+                        <div class="form-group"><label for="classUnit">Unidade</label><select id="classUnit" required onchange="loadCoursesForUnit(); loadInstructorsForUnit();"><option value="">Selecione...</option></select></div>
+                        <div class="form-group"><label for="classCourse">Curso</label><select id="classCourse" required><option value="">Selecione uma unidade primeiro...</option></select></div>
+                        <div class="form-group"><label for="classInstructor">Instrutor</label><select id="classInstructor" required><option value="">Selecione uma unidade primeiro...</option></select></div>
+                        <div class="form-group"><label for="classYear">Ano</label><input type="number" id="classYear" required></div>
+                    </div>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Cadastrar Turma</button>
+                </form>
+                <div style="margin-bottom: 20px;">
+                    <h3>Adicionar Estudantes</h3>
+                    <div style="display: flex; gap: 10px; align-items: end;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;"><label for="studentClass">Turma</label><select id="studentClass"><option value="">Selecione uma turma</option></select></div>
+                        <div class="form-group" style="flex: 2; margin-bottom: 0;"><label for="studentName">Nome do Estudante</label><input type="text" id="studentName"></div>
+                        <button type="button" onclick="addStudent()" class="btn"><i class="fas fa-user-plus"></i> Adicionar</button>
+                    </div>
+                </div>
+                <table class="table"><thead><tr><th>Turma</th><th>Unidade</th><th>Instrutor</th><th>Ano</th><th>Estudantes</th><th>Ações</th></tr></thead><tbody id="classesTableBody"></tbody></table>
+            </div>
+            <div id="attendancePage" class="page">
+                <h2><i class="fas fa-check-circle"></i> Lista de Presença</h2>
+                
+                <!-- Dados da Aula -->
+                <div class="attendance-header">
+                    <div class="class-info-card">
+                        <h3><i class="fas fa-info-circle"></i> Dados da Aula</h3>
+                        <div class="class-info-grid">
+                            <div class="form-group">
+                                <label for="attendanceClassSelect">Turma</label>
+                                <select id="attendanceClassSelect" onchange="loadAttendanceStudents()">
+                                    <option value="">Selecione uma turma</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="attendanceDate">Data da Presença</label>
+                                <input type="date" id="attendanceDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="attendanceInstructor">Instrutor</label>
+                                <input type="text" id="attendanceInstructor" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="attendanceStartTime">Hora Inicial</label>
+                                <input type="time" id="attendanceStartTime" value="08:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="attendanceEndTime">Hora Final</label>
+                                <input type="time" id="attendanceEndTime" value="12:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="attendanceDuration">Carga Horária</label>
+                                <input type="number" id="attendanceDuration" value="240" min="1" placeholder="minutos">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Atividades e Observações da Aula -->
+                <div class="lesson-details-card">
+                    <h3><i class="fas fa-clipboard-list"></i> Atividades e Observações</h3>
+                    <div class="lesson-details-grid">
+                        <div class="form-group">
+                            <label for="lessonActivities">Atividades Desenvolvidas</label>
+                            <textarea id="lessonActivities" rows="3" placeholder="Descreva as atividades realizadas na aula..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="lessonObservations">Observações da Aula</label>
+                            <textarea id="lessonObservations" rows="3" placeholder="Observações gerais sobre a aula..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controles da Lista -->
+                <div class="attendance-controls">
+                    <div class="controls-left">
+                        <button onclick="markAllPresent()" class="btn btn-success">
+                            <i class="fas fa-check-double"></i> Marcar Todos Presentes
+                        </button>
+                        <button onclick="markAllAbsent()" class="btn btn-warning">
+                            <i class="fas fa-times-circle"></i> Marcar Todos Ausentes
+                        </button>
+                        <button onclick="clearAllAttendance()" class="btn">
+                            <i class="fas fa-eraser"></i> Limpar Tudo
+                        </button>
+                    </div>
+                    <div class="controls-right">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="studentSearch" placeholder="Buscar aluno..." onkeyup="filterStudents()">
+                        </div>
+                        <div class="attendance-summary">
+                            <span class="present-count">Presentes: <strong id="presentCount">0</strong></span>
+                            <span class="absent-count">Ausentes: <strong id="absentCount">0</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Estudantes -->
+                <div id="attendanceStudentsList" class="students-attendance-list">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Selecione uma turma para começar o registro de presença.
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="attendance-actions">
+                    <button onclick="saveAttendance()" class="btn btn-success btn-large">
+                        <i class="fas fa-save"></i> Salvar Lista de Presença
+                    </button>
+                    <button onclick="exportAttendanceList()" class="btn btn-primary">
+                        <i class="fas fa-file-pdf"></i> Exportar Lista
+                    </button>
+                    <button onclick="viewAttendanceHistory()" class="btn">
+                        <i class="fas fa-history"></i> Histórico de Presenças
+                    </button>
+                </div>
+
+                <!-- Modal para Histórico de Presença -->
+                <div id="attendanceHistoryModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3><i class="fas fa-history"></i> Histórico de Presenças</h3>
+                            <button onclick="closeAttendanceHistory()" class="modal-close">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="history-filters">
+                                <div class="form-group">
+                                    <label for="historyStudent">Filtrar por Aluno</label>
+                                    <select id="historyStudent">
+                                        <option value="">Todos os alunos</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="historyStartDate">Data Inicial</label>
+                                    <input type="date" id="historyStartDate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="historyEndDate">Data Final</label>
+                                    <input type="date" id="historyEndDate">
+                                </div>
+                                <button onclick="loadAttendanceHistory()" class="btn">
+                                    <i class="fas fa-filter"></i> Filtrar
+                                </button>
+                            </div>
+                            <div id="historyResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Page -->
+            <div id="reportsPage" class="page">
+                <h2><i class="fas fa-file-excel"></i> Relatórios de Presença</h2>
+                <div class="report-filters" style="margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label for="reportUnit">Unidade</label>
+                            <select id="reportUnit" onchange="loadReportClasses()">
+                                <option value="">Todas as unidades</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportClass">Turma</label>
+                            <select id="reportClass">
+                                <option value="">Todas as turmas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportDateStart">Data Inicial</label>
+                            <input type="date" id="reportDateStart">
+                        </div>
+                        <div class="form-group">
+                            <label for="reportDateEnd">Data Final</label>
+                            <input type="date" id="reportDateEnd">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button onclick="generateReport()" class="btn">
+                            <i class="fas fa-chart-bar"></i> Gerar Relatório
+                        </button>
+                        <button onclick="exportToExcel()" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Exportar para Excel
+                        </button>
+                    </div>
+                </div>
+                <div id="reportResults"></div>
+            </div>
+
+            <!-- Data Management Page -->
+            <div id="dataManagementPage" class="page">
+                <h2><i class="fas fa-database"></i> Gerenciamento de Dados</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="dataStorageSize">0 KB</div>
+                        <div class="stat-label">Espaço Usado</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="lastSaveTime">-</div>
+                        <div class="stat-label">Último Salvamento</div>
+                    </div>
+                </div>
+
+                <div class="data-actions" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
+                    
+                    <!-- Backup e Restore -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <h3><i class="fas fa-download"></i> Backup & Restore</h3>
+                        </div>
+                        <p style="color: #64748b; margin-bottom: 20px;">
+                            Faça backup de todos os dados ou restaure de um arquivo anterior.
+                        </p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-success" onclick="exportDataBackup()">
+                                <i class="fas fa-download"></i> Exportar Backup
+                            </button>
+                            <label class="btn" style="cursor: pointer; background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);">
+                                <i class="fas fa-upload"></i> Importar Backup
+                                <input type="file" accept=".json" onchange="importDataBackup(this)" style="display: none;">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Status do Sistema -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <h3><i class="fas fa-info-circle"></i> Status do Sistema</h3>
+                        </div>
+                        <div id="systemStatus">
+                            <div style="margin-bottom: 10px;">
+                                <strong>Auto-save:</strong> <span id="autoSaveStatus" style="color: #48bb78;">Ativo</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <strong>Total de registros:</strong>
+                                <div style="margin-left: 20px; margin-top: 5px;">
+                                    <div>Usuários: <span id="usersCount">0</span></div>
+                                    <div>Unidades: <span id="unitsCount">0</span></div>
+                                    <div>Cursos: <span id="coursesCount">0</span></div>
+                                    <div>Turmas: <span id="classesCount">0</span></div>
+                                    <div>Estudantes: <span id="studentsCount">0</span></div>
+                                    <div>Registros de presença: <span id="attendanceCount">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ações Administrativas -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <h3><i class="fas fa-tools"></i> Ações Administrativas</h3>
+                        </div>
+                        <p style="color: #64748b; margin-bottom: 20px;">
+                            <strong>⚠️ CUIDADO:</strong> Estas ações são irreversíveis!
+                        </p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-danger" onclick="clearAllSystemData()">
+                                <i class="fas fa-trash"></i> Limpar Todos os Dados
+                            </button>
+                            <button class="btn" onclick="saveDataManually()" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+                                <i class="fas fa-save"></i> Salvar Agora
+                            </button>
+                            <button class="btn" onclick="forcarAtualizacaoDados()" style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);">
+                                <i class="fas fa-sync-alt"></i> Atualizar Dados
+                            </button>
+                            <button class="btn" onclick="atualizarDadosForcado()" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+                                <i class="fas fa-hammer"></i> Forçar Atualização
+                            </button>
+                            <button class="btn" onclick="mostrarDadosEmergencia()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                                <i class="fas fa-exclamation-triangle"></i> Modo Emergência
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-card" style="margin-top: 20px;">
+                    <div class="report-header">
+                        <h3><i class="fas fa-question-circle"></i> Sobre o Armazenamento Local</h3>
+                    </div>
+                    <div style="color: #64748b; line-height: 1.6;">
+                        <p><strong>Como funciona:</strong> Os dados são salvos automaticamente no seu navegador usando localStorage. Isso significa que:</p>
+                        <ul style="margin: 15px 0; padding-left: 20px;">
+                            <li>✅ Dados persistem entre sessões (não são perdidos ao fechar o navegador)</li>
+                            <li>✅ Salvamento automático a cada 2 minutos e sempre que você faz alterações</li>
+                            <li>✅ Funciona offline - não precisa de conexão com internet</li>
+                            <li>⚠️ Dados ficam apenas neste computador e navegador</li>
+                            <li>⚠️ Limpar dados do navegador apagará todas as informações</li>
+                        </ul>
+                        <p><strong>Recomendação:</strong> Faça backups regulares para ter uma cópia de segurança dos dados.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses Page -->
+            <div id="coursesPage" class="page">
+                <h2><i class="fas fa-book"></i> Gerenciamento de Cursos</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalCourses">0</div>
+                        <div class="stat-label">Total de Cursos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="activeCourses">0</div>
+                        <div class="stat-label">Cursos Ativos</div>
+                    </div>
+                </div>
+
+                <form id="courseForm" style="margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label for="courseName">Nome do Curso</label>
+                            <input type="text" id="courseName" placeholder="Ex: Informática Básica" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="courseDescription">Descrição</label>
+                            <textarea id="courseDescription" placeholder="Descrição do curso..." rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="courseDuration">Duração (horas)</label>
+                            <input type="number" id="courseDuration" placeholder="120" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="courseUnit">Unidade</label>
+                            <select id="courseUnit" required>
+                                <option value="">Selecione uma unidade...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Cadastrar Curso
+                        </button>
+                        <button type="button" class="btn" onclick="cancelCourseEdit()" id="cancelCourseEdit" style="display: none;">
+                            <i class="fas fa-times"></i> Cancelar Edição
+                        </button>
+                    </div>
+                </form>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3><i class="fas fa-list"></i> Cursos Cadastrados</h3>
+                        <div>
+                            <label for="filterCourseUnit" style="margin-right: 10px;">Filtrar por unidade:</label>
+                            <select id="filterCourseUnit" onchange="loadCourses()">
+                                <option value="">Todas as unidades</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nome do Curso</th>
+                                <th>Unidade</th>
+                                <th>Duração</th>
+                                <th>Status</th>
+                                <th>Turmas</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coursesTableBody">
+                            <!-- Courses will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Carregue main.js antes de advanced-functions.js e antes de qualquer script inline -->
+    <script src="main.js"></script>
+    <script src="advanced-functions.js"></script>
+    <script>
+        // Todas as funções dentro do DOMContentLoaded para garantir que sejam carregadas
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se já existe a unidade Itaquera
+            const units = JSON.parse(localStorage.getItem('units')) || [];
+            const existingUnit = units.find(unit => unit.name === 'Itaquera');
+            
+            if (!existingUnit) {
+                const defaultUnit = {
+                    id: 'unit_itaquera_' + Date.now(),
+                    name: 'Itaquera',
+                    address: 'Av. Ataliba Lionel, 245',
+                    phone: '(11) 2503-2617',
+                    createdAt: new Date().toISOString(),
+                    status: 'active'
+                };
+                
+                units.push(defaultUnit);
+                localStorage.setItem('units', JSON.stringify(units));
+                console.log('Unidade Itaquera adicionada automaticamente ao sistema');
+            }
+
+            // Configurar o form de primeiro acesso
+            const firstAccessForm = document.getElementById('firstAccessForm');
+            if (firstAccessForm) {
+                firstAccessForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleFirstAccessFormSubmit();
+                });
+            }
+
+            // Definir todas as funções globalmente
+            window.handleFirstAccessFormSubmit = function() {
+                const formData = {
+                    name: document.getElementById("firstAccessName").value.trim(),
+                    cpf: document.getElementById("firstAccessCpf").value.trim(),
+                    phone: document.getElementById("firstAccessPhone").value.trim(),
+                    email: document.getElementById("firstAccessEmail").value.trim().toLowerCase(),
+                    role: document.getElementById("firstAccessRole").value,
+                    unit: document.getElementById("firstAccessUnit").value,
+                    password: document.getElementById("firstAccessPassword").value,
+                    passwordConfirm: document.getElementById("firstAccessPasswordConfirm").value,
+                };
+
+                console.log('Dados do formulário:', formData);
+
+                // Limpar alertas anteriores
+                document.getElementById("firstAccessAlert").classList.add("hidden");
+                document.getElementById("firstAccessSuccess").classList.add("hidden");
+
+                // Validações básicas
+                if (!formData.name || !formData.cpf || !formData.email || !formData.role || !formData.unit || !formData.password) {
+                    showFormAlert("Preencha todos os campos obrigatórios!");
+                    return;
+                }
+
+                if (formData.password !== formData.passwordConfirm) {
+                    showFormAlert("As senhas não coincidem!");
+                    return;
+                }
+
+                if (!formData.email.endsWith('@ios.org.br')) {
+                    showFormAlert("Use apenas e-mails @ios.org.br");
+                    return;
+                }
+
+                // Verificar se email já existe (apenas entre usuários ativos, não pendentes)
+                const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+                const pendingUsers = JSON.parse(localStorage.getItem('pendingUsers')) || [];
+                
+                console.log('Usuários existentes:', existingUsers.length);
+                console.log('Usuários pendentes antes:', pendingUsers.length);
+                
+                if (existingUsers.find(user => user.email === formData.email && user.status !== 'pending')) {
+                    showFormAlert("Este e-mail já está cadastrado no sistema");
+                    return;
+                }
+                if (pendingUsers.find(user => user.email === formData.email)) {
+                    showFormAlert("Este e-mail já está aguardando aprovação");
+                    return;
+                }
+
+                // Criar usuário pendente
+                const newPendingUser = {
+                    id: 'pending_' + Date.now(),
+                    name: formData.name,
+                    cpf: formData.cpf,
+                    phone: formData.phone,
+                    email: formData.email,
+                    role: formData.role,
+                    unit: formData.unit,
+                    password: formData.password,
+                    status: "pending",
+                    createdAt: new Date().toISOString(),
+                    firstAccess: true,
+                };
+
+                pendingUsers.push(newPendingUser);
+                localStorage.setItem('pendingUsers', JSON.stringify(pendingUsers));
+
+                console.log('✅ Cadastro pendente salvo:', newPendingUser);
+                console.log('✅ Total de cadastros pendentes agora:', pendingUsers.length);
+
+                showFormSuccess("Cadastro realizado com sucesso! Aguarde a aprovação do administrador para acessar o sistema.");
+
+                setTimeout(() => {
+                    if (typeof closeFirstAccessModal === 'function') {
+                        closeFirstAccessModal();
+                    }
+                    alert("Cadastro enviado! Entre em contato com o administrador para ativação da conta.");
+                    
+                    // Limpar o formulário
+                    document.getElementById('firstAccessForm').reset();
+                }, 2000);
+            };
+
+            window.showFormAlert = function(message) {
+                document.getElementById("firstAccessAlert").textContent = message;
+                document.getElementById("firstAccessAlert").classList.remove("hidden");
+            };
+
+            window.showFormSuccess = function(message) {
+                document.getElementById("firstAccessSuccess").textContent = message;
+                document.getElementById("firstAccessSuccess").classList.remove("hidden");
+            };
+
+            // Função para carregar cadastros pendentes
+window.loadPendingUsers = function() {
+    // Só mostra para admin
+    const currentUser = window.currentUser;
+    const section = document.getElementById('pendingUsersSection');
+    if (!currentUser || currentUser.type !== 'admin') {
+        if (section) section.style.display = 'none';
+        return;
+    } else {
+        if (section) section.style.display = '';
+    }
+    console.log('🔍 Carregando cadastros pendentes...');
+    const pendingUsers = JSON.parse(localStorage.getItem('pendingUsers')) || [];
+    const container = document.getElementById('pendingUsersContainer');
+    console.log('📊 Cadastros pendentes encontrados:', pendingUsers.length);
+    if (!container) {
+        console.error('❌ Container pendingUsersContainer não encontrado!');
+        return;
+    }
+    if (pendingUsers.length === 0) {
+        container.innerHTML = `
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Nenhum cadastro pendente no momento.
+            </div>
+        `;
+        return;
+    }
+    let html = '<table class="table">';
+    html += `
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>E-mail</th>
+                <th>Função</th>
+                <th>Unidade</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+    pendingUsers.forEach(user => {
+        const units = JSON.parse(localStorage.getItem('units')) || [];
+        const unit = units.find(u => u.id == user.unit);
+        const unitName = unit ? unit.name : 'N/A';
+        const createdDate = new Date(user.createdAt).toLocaleDateString('pt-BR');
+        const roleTexts = {
+            'admin': 'Administrador Master',
+            'instructor': 'Instrutor',
+            'pedagogue': 'Pedagogo',
+            'monitor': 'Monitor'
+        };
+        html += `
+            <tr>
+                <td>${user.name}</td>
+                <td>${user.cpf}</td>
+                <td>${user.email}</td>
+                <td>${roleTexts[user.role] || user.role}</td>
+                <td>${unitName}</td>
+                <td>${createdDate}</td>
+                <td>
+                    <button class="btn btn-success" onclick="approveUser('${user.id}')" style="margin-right: 5px;">
+                        <i class="fas fa-check"></i> Aprovar
+                    </button>
+                    <button class="btn btn-danger" onclick="rejectUser('${user.id}')">
+                        <i class="fas fa-times"></i> Rejeitar
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+    console.log('✅ Tabela de cadastros pendentes atualizada');
+};
+
+/**
+ * Aprova um usuário que está com status "pending".
+ * Move o usuário de 'pendingUsers' para 'users', atualiza status e salva tudo.
+ * Só admins podem aprovar.
+ * @param {string} userId - ID do usuário pendente.
+ */
+window.approveUser = function(userId) {
+    // Verifica permissão
+    if (!window.currentUser || window.currentUser.type !== 'admin') {
+        showAlert("Apenas administradores podem aprovar usuários!", "error");
+        return;
+    }
+
+    // Busca o usuário pendente
+    const pendingUsers = JSON.parse(localStorage.getItem('pendingUsers')) || [];
+    const userIndex = pendingUsers.findIndex(u => u.id === userId);
+    if (userIndex === -1) {
+        showAlert("Usuário pendente não encontrado!", "error");
+        return;
+    }
+    const user = pendingUsers[userIndex];
+
+    // Cria novo usuário ativo
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    const newUser = {
+        ...user,
+        id: Date.now(),
+        status: "active",
+        approvedAt: new Date().toISOString(),
+        approvedBy: window.currentUser.name
+    };
+    users.push(newUser);
+
+    // Atualiza localStorage e arrays globais
+    pendingUsers.splice(userIndex, 1);
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('pendingUsers', JSON.stringify(pendingUsers));
+    window.users = users;
+
+    // Atualiza interface
+    if (typeof loadUsers === 'function') loadUsers();
+    if (typeof loadPendingUsers === 'function') loadPendingUsers();
+
+    showAlert("Usuário aprovado com sucesso!", "success");
+};
+
+            window.rejectUser = function(userId) {
+                if (!confirm('Tem certeza que deseja rejeitar este cadastro?')) {
+                    return;
+                }
+                
+                const pendingUsers = JSON.parse(localStorage.getItem('pendingUsers')) || [];
+                const userIndex = pendingUsers.findIndex(u => u.id === userId);
+                
+                if (userIndex === -1) {
+                    alert('Usuário não encontrado!');
+                    return;
+                }
+                
+                const user = pendingUsers[userIndex];
+                pendingUsers.splice(userIndex, 1);
+                localStorage.setItem('pendingUsers', JSON.stringify(pendingUsers));
+                
+                loadPendingUsers();
+                alert(`Cadastro de ${user.name} foi rejeitado.`);
+            };
+
+            // Função para debug
+            window.debugPendingUsers = function() {
+                const pendingUsers = JSON.parse(localStorage.getItem('pendingUsers')) || [];
+                console.log('🔍 DEBUG - Cadastros pendentes:', pendingUsers);
+                console.log('🔍 DEBUG - Total:', pendingUsers.length);
+                pendingUsers.forEach((user, index) => {
+                    console.log(`🔍 DEBUG - Pendente ${index + 1}:`, user);
+                });
+                return pendingUsers;
+            };
+
+            // Função para forçar carregamento dos pendentes
+            window.forceLoadPending = function() {
+                console.log('🔄 Forçando carregamento dos cadastros pendentes...');
+                loadPendingUsers();
+            };
+
+            // Interceptar a função showPage original
+            const originalShowPage = window.showPage;
+            window.showPage = function(page) {
+                console.log('📄 Mostrando página:', page);
+                // Executar a função original se existir
+                if (typeof originalShowPage === 'function') {
+                    originalShowPage(page);
+                } else {
+                    // Implementação básica
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    const targetPage = document.getElementById(page + 'Page');
+                    const targetTab = document.querySelector(`[onclick="showPage('${page}')"]`);
+                    if (targetPage) targetPage.classList.add('active');
+                    if (targetTab) targetTab.classList.add('active');
+                }
+                // Carregar cadastros pendentes SEMPRE que abrir a aba usuários
+                if (page === 'users') {
+                    setTimeout(() => {
+                        loadPendingUsers();
+                    }, 300);
+                }
+            };
+
+            // Carregar cadastros pendentes ao iniciar, se já estiver na aba usuários
+            if (document.getElementById('usersPage') && !document.getElementById('usersPage').classList.contains('hidden')) {
+                loadPendingUsers();
+            }
+
+            console.log('✅ Script de cadastros pendentes carregado');
+        });
+    </script>
+
+    <!-- Modal de edição de usuário -->
+<div id="userEditModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <!-- Cabeçalho do modal com título e botão fechar -->
+    <div class="modal-header">
+      <h3><i class="fas fa-user-edit"></i> Editar Usuário</h3>
+      <button onclick="closeUserEditModal()" class="modal-close">&times;</button>
+    </div>
+
+    <!-- Corpo do modal com o formulário de edição -->
+    <div class="modal-body">
+      <form id="editUserForm">
+        <!-- ID oculto do usuário -->
+        <input type="hidden" id="editUserId">
+
+        <!-- Linha com Nome e CPF -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editUserName">Nome</label>
+            <input type="text" id="editUserName" required>
+          </div>
+          <div class="form-group">
+            <label for="editUserCpf">CPF</label>
+            <input type="text" id="editUserCpf" required maxlength="14">
+          </div>
+        </div>
+
+        <!-- Linha com E-mail e Senha -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editUserEmail">E-mail</label>
+            <input type="email" id="editUserEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="editUserPassword">Senha</label>
+            <input type="password" id="editUserPassword">
+          </div>
+        </div>
+
+        <!-- Linha com Tipo e Unidade -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editUserType">Tipo</label>
+            <select id="editUserType" required>
+              <option value="admin">Administrador Master</option>
+              <option value="instructor">Instrutor</option>
+              <option value="pedagogue">Pedagogo</option>
+              <option value="monitor">Monitor</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editUserUnit">Unidade</label>
+            <select id="editUserUnit"></select>
+          </div>
+        </div>
+
+        <!-- Botões: Ativar/Desativar, Resetar senha e Salvar -->
+        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+          <button type="button" class="btn btn-warning" onclick="toggleUserStatusInsideModal()">
+            <i class="fas fa-ban"></i> Ativar/Desativar
+          </button>
+          <button type="button" class="btn" onclick="resetUserPasswordInsideModal()">
+            <i class="fas fa-key"></i> Resetar Senha
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="main.js"></script>
+<script src="attendance-core.js"></script>
+<script src="attendance-functions.js"></script>
+</body>
+</html>
